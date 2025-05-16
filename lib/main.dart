@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:line_icons/line_icons.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
   runApp(const MyApp());
 }
 
@@ -17,7 +18,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.grey.shade300),
       ),
-      home: HomePage(),
+      home: const HomePage(),
     );
   }
 }
@@ -25,9 +26,18 @@ class MyApp extends StatelessWidget {
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
 
-  Future<void> _launchUrl(String url) async {
-    if (!await launchUrlString(url, mode: LaunchMode.externalApplication)) {
-      debugPrint('Could not launch $url');
+  Future<void> _launchUrl(String urlString) async {
+    // Use platformDefault for mailto, tel; external for http/https
+    final mode =
+        (urlString.startsWith('mailto:') || urlString.startsWith('tel:'))
+            ? LaunchMode.platformDefault
+            : LaunchMode.externalApplication;
+    try {
+      if (!await launchUrlString(urlString, mode: mode)) {
+        debugPrint('Could not launch $urlString');
+      }
+    } catch (e) {
+      debugPrint('Error launching $urlString: $e');
     }
   }
 
