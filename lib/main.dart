@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:line_icons/line_icons.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 void main() {
   runApp(const MyApp());
@@ -23,6 +24,12 @@ class MyApp extends StatelessWidget {
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
+
+  Future<void> _launchUrl(String url) async {
+    if (!await launchUrlString(url, mode: LaunchMode.externalApplication)) {
+      debugPrint('Could not launch $url');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -169,13 +176,21 @@ class HomePage extends StatelessWidget {
                             title: Text("Email"),
                             subtitle: Text("banjovictoria25@gmail.com"),
                             leading: Icon(Icons.email),
+                            onTap:
+                                () => _launchUrl(
+                                  'mailto:banjovictoria25@gmail.com',
+                                ),
                           ),
                           ListTile(
                             title: Text("Instagram"),
                             subtitle: Text(
-                              "https://www.instagram.com/_banjovictoria/",
+                              "https://www.instagram.com/_banjovictoria",
                             ),
                             leading: Icon(LineIcons.instagram),
+                            onTap:
+                                () => _launchUrl(
+                                  'https://instagram.com/_banjovictoria/',
+                                ),
                           ),
                           ListTile(
                             title: Text("About"),
